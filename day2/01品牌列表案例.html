@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.js"></script>
+    <link rel="stylesheet" href="./lib/bootstrap.css" />
+</head>
+
+<body>
+    <div id="app">
+
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label>Id:
+                    <input type="text" class="form-control" v-model="id" />
+                </label>
+                <label>Name:
+                    <input type="text" class="form-control" v-model="name" />
+                </label>
+                <!-- 在vue中使用事件绑定机制，为元素制定处理函数时，如果加了小括号，就可以给函数传参数-->
+                <input type="button" value="添加" class="btn btn-primary" @click="add()">
+
+                <label>根据Name查找:
+                    <input type="text" class="form-control" v-model="condition" />
+                </label>
+            </div>
+        </div>
+
+
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>CreatTime</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 之前，v-for中的数据 都是直接从data上的list中渲染的-->
+                <!-- 现在，我们定义了一个search方法，同时将条件通过传参形式传入search方法-->
+                <!-- 在search内部，通过执行for循环，返回符合条件的数据，返回一个新数组-->
+                <tr v-for="tr in search(condition)" v-bind:key="tr.id">
+                    <td>{{tr.id}}</td>
+                    <td v-text="tr.name"></td>
+                    <td>{{tr.creatTime}}</td>
+                    <td>
+                        <a href="" @click.prevent="del(tr.id)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                id: '',
+                name: '',
+                condition: '',
+                list: [{
+                        id: 1,
+                        name: '奔驰',
+                        creatTime: new Date()
+                    },
+                    {
+                        id: 2,
+                        name: '本田',
+                        creatTime: new Date()
+                    },
+                    {
+                        id: 3,
+                        name: '宝马',
+                        creatTime: new Date()
+                    }
+                ]
+            },
+            methods: {
+                add() {
+                    //console.log("ok");
+
+                    var car = {
+                        id: this.id,
+                        name: this.name,
+                        creatTime: new Date()
+                    };
+                    this.list.push(car);
+                    //清空输入行
+                    this.id = this.name = '';
+                },
+                del(id) {
+                    //根据id删除数据
+                    //如何根据id 找到要删除这一项的索引
+                    //找到索引后 调用数组的 splice方法
+                    // this.list.some((item,i) => {
+                    //     if(item.id==id){
+                    //         this.list.splice(i,1)
+                    //         //在数组的some方法中如果return true就会立即终止这个数组的后续循环
+                    //         return true;
+                    //     }
+                    // })
+
+                    //优化用查找方式
+                    var index = this.list.findIndex(item => {
+                        if (item.id == id) {
+                            return true;
+                        }
+                    })
+
+                    this.list.splice(index, 1);
+                },
+                search(condition) {
+                    //根据条件 进行数据赛选
+                    // var newList = [];
+                    // if (condition != "") {
+                    //     this.list.forEach(item => {
+                    //         if (item.name.indexOf(condition)!= -1) {
+                    //             newList.push(item);
+                    //         }
+                    //     });
+                    // } else {
+                    //     return this.list;
+                    // }
+                    // return newList;
+
+                    //优化
+                    //注意：forEach some filter findIndex 这些都书与数组的新方法
+                    //都会对数组中的每一项进行遍历，执行相关操作
+                    return this.list.filter(item => {
+                        //注意 ES6中 为字符串提供了一个新方法，叫做
+                        //String.prototype.includes('要包含的字符串')
+                        //contains
+                        if (item.name.includes(condition)) {
+                            return item;
+                        }
+                    })
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
