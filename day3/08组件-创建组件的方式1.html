@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 如果要使用组件，直接把组件的名称 以HTML标签的形式 引入到页面即可-->
+        <!-- <my-com1 v-text="'哇哇哇哇哇'"></my-com1> -->
+        <mycom2></mycom2>
+    </div>
+    <script>
+        //1.1 使用Vue.extend来创建全局的Vue组件
+        var com1 = Vue.extend({
+            template: '<h3>这是使用Vue.extend创建的组件</h3>'//通过template属性，指定了组件要展示的HTML结构
+        });
+
+        //1.2使用Vue.component('组件的名称',创建出来的组件模板对象)
+        //myCom1使用驼峰形式，则引入标签需要转换为my-com1
+        Vue.component('myCom1', com1);
+
+        // Vue.component第一个参数：组件的名称，将来引用组件是，以标签形式引入
+        // 第二个参数： Vue.extend创建的组件，其中template就是组件展示的HTML内容
+        Vue.component('mycom2',
+            Vue.extend({
+                template: '<h3>这是使用Vue.component(extend)创建的组件</h3>'//通过template属性，指定了组件要展示的HTML结构
+            })
+        )
+
+
+        var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>
