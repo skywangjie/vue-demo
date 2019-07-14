@@ -58,9 +58,15 @@
 
     </div>
     <script>
+        //如果我们通过了全局配置了请求数据接口根域名
+        //则，每次单独发起http请求时，请求url路径应该用相对路径开头
+        //前面不能带/ 否者不会访问到
 
-        Vue.http.options.root='http://www.liulongbin.top:3005';
+        Vue.http.options.root='http://www.liulongbin.top:3005/';
         Vue.http.headers.common['Authorization']='Basic YXBpOnBhc3N3b3jK';//认证参数
+
+        //全局启用emulateJSON选项
+        Vue.http.options.emulateJSON=true;
         var vm = new Vue({
             el: '#app',
             data: {
@@ -70,6 +76,10 @@
             methods: {
                 add() {
                     var url = 'api/addproduct';
+                    if(this.name==""){
+                        //name必填
+                        return ;
+                    }
                     this.$http.post(url, {
                         name: this.name
                     }).then(
